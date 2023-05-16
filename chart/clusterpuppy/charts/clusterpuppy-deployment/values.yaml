@@ -1,0 +1,3 @@
+# This value is ONLY used when running the subchart (clusterpuppy-deployment) directly
+# Otherwise, clusterpuppy-deployment/imageName in the parent values.yaml takes priority
+imageName: "alpine:latest"

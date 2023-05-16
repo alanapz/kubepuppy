@@ -1,0 +1,12 @@
+button.btn.gm-gameTile {
+    background-color: white;
+    border-radius: 30px;
+    border-color: #666666;
+    height: 60px;
+    padding: 0;
+    width: 60px;
+}
+
+.gm-gameTile.selected {
+    border: 3px solid #666666!important;
+}

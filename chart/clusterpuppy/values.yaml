@@ -1,0 +1,16 @@
+# These values are available to all subcharts BUT vie Values.global
+# Values.appSelector - DOESNT WORK
+# Values.global.appSelector - OK
+global:
+  appSelector:
+    app: "clusterpuppy-{{ .Release.Name }}"
+
+# Used to parameter "clusterpuppy-service" subchart
+# These values override those in subchart values.yaml
+clusterpuppy-service:
+  httpPort: 80
+
+# Used to parameter "clusterpuppy-deployment" subchart
+# These values override those in subchart values.yaml
+clusterpuppy-deployment:
+  imageName: "alpine:latest"

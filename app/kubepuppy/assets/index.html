@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Go Master !</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="assets/gomaster.css"/>
+
+    <script type="text/javascript" defer="defer">
+
+        function range(start, end) {
+            const values = [];
+            for(var i=start; i<=end; i++) {
+                values.push(i);
+            }
+            return values;
+        }
+
+        console.log(range(1, 8));
+
+        function GameViewModel() {
+            const self = this;
+
+            self.newGameConfig = {
+                numberOfColoursForNewGame: ko.observable(6),
+                numberOfPositionsForNewGame: ko.observable(4),
+            };
+
+            self.gameId = ko.observable();
+            self.gameStarted = ko.computed(() => !! self.gameId());
+
+            self.numberOfPositions = ko.observable(0);
+            self.colours = ko.observableArray([]);
+            self.complete = ko.observable(false);
+            self.guesses = ko.observableArray([]);
+
+            self.selected = ko.observableArray([]);
+            self.currentPosition = ko.observable(null);
+
+            self.canSubmitGuess = ko.computed(() => self.gameStarted() && self.selected().every(v => v()));
+
+            self.startGame = () => {
+
+                self.gameId(null);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/game/new",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        numberOfColours: parseInt(self.newGameConfig.numberOfColoursForNewGame(), 10),
+                        numberOfPositions: parseInt(self.newGameConfig.numberOfPositionsForNewGame(), 10)
+                    }),
+                    success: (result) => {
+                        self.gameId(result.id);
+                        self.refreshGame();
+                    }
+                });
+            };
+
+            self.selectPosition = (position) => {
+                if (self.currentPosition() === position) {
+                    self.currentPosition(null);
+                }
+                else {
+                    self.currentPosition(position);
+                }
+            };
+
+            self.selectColour = (index, value) => {
+                if (self.gameStarted()) {
+                    self.selected()[index](value);
+                    self.currentPosition(null);
+
+                    // If we select a colour for a position, deseleect same colour for all other positions
+                    for (const other of [...self.selected().keys()].filter(k => k !== index).map(k => self.selected()[k])) {
+                        if (other() === value) {
+                            other(null);
+                        }
+                    }
+                }
+            };
+
+            self.refreshGame = () => {
+                if (self.gameStarted()) {
+                    $.ajax({
+                        type: "GET",
+                        url: `/api/game/${self.gameId()}`,
+                        success: (result) => {
+                            self.numberOfPositions(result.numberOfPositions);
+                            self.colours(result.colours);
+                            self.complete(result.complete);
+                            self.guesses(result.guesses);
+
+                            self.selected(Array(result.numberOfPositions).fill(true).map(() => ko.observable(false)));
+                            self.currentPosition(123);
+                        }
+                    });
+                }
+            };
+
+            self.submitGuess = () => {
+                if (self.canSubmitGuess()) {
+                    $.ajax({
+                        type: "POST",
+                        url: `/api/game/${self.gameId()}/guess`,
+                        dataType: "json",
+                        data: JSON.stringify({positions: this.selected().map(v => v())}),
+                        success: () => {
+                            self.refreshGame();
+                        }
+                    });
+                }
+            };
+        }
+
+        $(document).ready(() => {
+            ko.applyBindings(new GameViewModel());
+        });
+
+    </script>
+</head>
+<body style="padding: 20px;">
+<div id="current_game_block" data-bind="if: gameStarted">
+    <h1>Go Master !</h1>
+    <!-- ko if: complete() -->
+    <div class="alert alert-success" role="alert">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-award-fill" viewBox="0 0 16 16">
+            <path d="m8 0 1.669.864 1.858.282.842 1.68 1.337 1.32L13.4 6l.306 1.854-1.337 1.32-.842 1.68-1.858.282L8 12l-1.669-.864-1.858-.282-.842-1.68-1.337-1.32L2.6 6l-.306-1.854 1.337-1.32.842-1.68L6.331.864 8 0z"/>
+            <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z"/>
+        </svg>
+        &nbsp;
+        Well done! Game over
+    </div>
+    <!-- /ko -->
+    <form style="padding: 20px;">
+        <table id="results_table" class="table table-striped">
+            <thead>
+
+            </thead>
+            <tbody>
+                <!-- ko foreach: guesses -->
+                <tr>
+                    <td data-bind="text: $index() + 1"></td>
+                    <!-- ko foreach: { data: positions, as: 'position' } -->
+                    <td>
+                        <button type="button" class="btn btn-primary btn-lg btn-block disabled gm-gameTile" data-bind="style: { 'background-color': $data }"></button>
+                    </td>
+                    <!-- /ko -->
+                    <td>
+                        <!-- ko foreach: { data: range(1, $data.rightColourRightPlace) } -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-lightbulb-fill" viewBox="0 0 16 16">
+                            <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm3 8.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                        <!-- /ko -->
+                        <!-- ko foreach: { data: range(1, $data.rightColourWrongPlace) } -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16">
+                            <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"/>
+                        </svg>
+                        <!-- /ko -->
+                        <!-- ko foreach: { data: range(1, $data.wrongColour) } -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                        </svg>
+                        <!-- /ko -->
+                    </td>
+                </tr>
+                <!-- /ko -->
+                <!-- ko if: !complete() -->
+                <tr>
+                    <td>Guess :</td>
+                    <!-- ko foreach: selected() -->
+                    <td>
+                        <button type="button" class="btn btn-primary btn-lg btn-block disabled gm-gameTile" data-bind="style: { 'background-color': $data }, click: $root.selectPosition($index())"></button>
+                    </td>
+                    <!-- /ko -->
+                    <td>
+                        <button type="button" class="btn btn-primary btn-lg btn-block" data-bind="enable: canSubmitGuess, click: submitGuess">Submit !</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <!-- ko foreach: { data: [...Array(selected().length).keys()], as: 'item' } -->
+                    <td>
+                        <div data-bind="visible: $root.currentPosition() === $index()">
+                            <!-- ko foreach: $root.colours() -->
+                            <button type="button" class="btn btn-primary btn-lg btn-block gm-gameTile" data-bind="style: { 'background-color': $data }, if: $root.currentPosition() === item, click: function(data, event) { $root.selectColour(item, $data) }"></button>
+                            <!-- /ko -->
+                        </div>
+                    </td>
+                    <!-- /ko -->
+                    <td></td>
+                </tr>
+                <!-- /ko -->
+            </tbody>
+        </table>
+    </form>
+    <hr/>
+</div>
+<div id="new_game_block">
+    <h1>New Game</h1>
+    <form style="padding: 20px;">
+        <div class="form-group">
+            <label for="number_of_colours">Number of Colours :</label>
+            <select class="form-control" id="number_of_colours" data-bind="options: range(1, 8), value: newGameConfig.numberOfColoursForNewGame"></select>
+        </div>
+        <div class="form-group">
+            <label for="number_of_positions">Number of Positions :</label>
+            <select class="form-control" id="number_of_positions" data-bind="options: range(1, 8), value: newGameConfig.numberOfPositionsForNewGame"></select>
+        </div>
+        <div class="form-group">
+            <button id="new_game" type="button" class="btn btn-primary" data-bind="click: startGame">New Game</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

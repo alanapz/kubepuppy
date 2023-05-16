@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clusterpuppy-{{ .Release.Name }}-deployment
+  labels:
+    helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- range $k, $v :=  .Values.global.appSelector | required "appSelector required" }}
+      {{ $k }}: {{ tpl $v $ }}
+      {{- end }}  
+  template:
+    metadata:
+      labels:
+        {{- range $k, $v :=  .Values.global.appSelector | required "appSelector required" }}
+        {{ $k }}: {{ tpl $v $ }}
+        {{- end }}  
+    spec:
+      volumes:
+        - name: k3s-tls
+          hostPath:
+            path: /var/lib/rancher/k3s/server/tls/
+            type: Directory
+      containers:
+        - name: clusterpuppy
+          image: "alpine:latest"
+          imagePullPolicy: IfNotPresent
+          command: ["tail", "-f", "/dev/null"]
+          volumeMounts:
+            - mountPath: /var/clusterpuppy/server-ca.crt
+              name: k3s-tls
+              readOnly: true
+              subPath: server-ca.crt
+            - mountPath: /var/clusterpuppy/client-ca.crt
+              name: k3s-tls
+              readOnly: true
+              subPath: client-ca.crt
+            - mountPath: /var/clusterpuppy/client-ca.key
+              name: k3s-tls
+              readOnly: true
+              subPath: client-ca.key
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
