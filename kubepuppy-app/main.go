@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	_ "github.com/gin-gonic/gin"
+	"kubepuppy/impl"
+	"log"
 	"os"
 )
 
@@ -11,22 +13,36 @@ func main() {
 
 	os.Setenv("KUBEPUPPY_KUBECONFIG", "C:\\Users\\alan\\.kube\\config")
 	os.Setenv("KUBEPUPPY_SERVER_CA_FILE", "C:\\Users\\alan\\.kube\\tls.crt")
+	os.Setenv("KUBEPUPPY_CLIENT_CA_FILE", "C:\\Users\\alan\\.kube\\client-ca.crt")
 
-	cluster, err := InitialiseCluster(context.TODO())
+	cluster, err := impl.InitialiseCluster(context.TODO())
 	if err != nil {
 		panic(err)
 	}
 
-	//fmt.Println(cluster)
-	bindings, roles := cluster.FindRoleBindingsForSubject(NewUser("system:kube-scheduler"))
-	for _, binding := range bindings {
-		fmt.Println(*binding)
-	}
-	for _, role := range roles {
-		fmt.Println(*role)
+	crtdata, err := os.ReadFile("C:\\Users\\alan\\.kube\\client.crt")
+
+	if err != nil {
+		panic(err)
 	}
 
-	//crtdata, err := os.ReadFile("C:\\Users\\alan\\.kube\\client2.crt")
+	result, err := cluster.VerifyCertificate(crtdata)
+
+	log.Printf("%v", result.Certificate.Subject)
+
+	principal, err := impl.NewCertificatePrincipal(result.Certificate)
+
+	fmt.Println(principal)
+	bindings, roles, err := cluster.FindRoleBindingsForSubject(impl.NewUserSubject("alan"))
+	log.Printf("%v", err)
+
+	for _, binding := range bindings {
+		fmt.Println(binding.QualifiedName())
+	}
+	for _, role := range roles {
+		fmt.Println(role.QualifiedName())
+	}
+
 	//fmt.Print(string(crtdata))
 	//
 	//cpb, cr := pem.Decode(crtdata)

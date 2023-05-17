@@ -30,6 +30,22 @@ func Map[T any, U any](src []T, mapper func(T) U) []U {
 	return dest
 }
 
+func MapWithError[T any, U any](src []T, mapper func(T) (U, error)) ([]U, error) {
+	dest := make([]U, 0)
+
+	for _, v := range src {
+		r, err := mapper(v)
+
+		if err != nil {
+			return nil, err
+		}
+
+		dest = append(dest, r)
+	}
+
+	return dest, nil
+}
+
 func Min[T ~int](a, b T) T {
 	if a < b {
 		return a

@@ -1,1 +1,3 @@
 *.exe
+.gradle
+build
