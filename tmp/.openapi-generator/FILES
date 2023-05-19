@@ -1,0 +1,17 @@
+Dockerfile
+api/openapi.yaml
+go/README.md
+go/api_certificate.go
+go/api_role.go
+go/api_role_binding.go
+go/api_subject.go
+go/model_certificate.go
+go/model_role.go
+go/model_role_binding.go
+go/model_role_binding_details.go
+go/model_role_details.go
+go/model_subject.go
+go/model_subject_details.go
+go/model_subject_roles_inner.go
+go/routers.go
+main.go

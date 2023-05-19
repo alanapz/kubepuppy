@@ -1,0 +1,395 @@
+openapi: 3.0.0
+info:
+  title: KubePuppy API
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /certificate/validate:
+    post:
+      operationId: validateCertificate
+      requestBody:
+        $ref: '#/components/requestBodies/CertificateUpload'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+          description: successful operation
+      summary: Shows details regarding the specified certificate (validity and assigned
+        roles and permissions).
+      tags:
+      - certificate
+  /subjects:
+    get:
+      operationId: listSubjects
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Subject'
+                type: array
+          description: successful operation
+      summary: Lists all subjects.
+      tags:
+      - subject
+  /subject/{subjectId}:
+    get:
+      operationId: getSubject
+      parameters:
+      - explode: false
+        in: path
+        name: subjectId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectDetails'
+          description: successful operation
+      summary: Gets details regarding the specified subject.
+      tags:
+      - subject
+  /roleBindings:
+    get:
+      operationId: listRoleBindings
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RoleBinding'
+                type: array
+          description: successful operation
+      summary: Lists all role bindings (both cluster and namespaced).
+      tags:
+      - roleBinding
+  /roleBinding/{roleBindingId}:
+    delete:
+      operationId: deleteRoleBinding
+      parameters:
+      - explode: false
+        in: path
+        name: roleBindingId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+          description: successful operation
+      summary: Deletes the specified role binding.
+      tags:
+      - roleBinding
+    get:
+      operationId: getRoleBinding
+      parameters:
+      - explode: false
+        in: path
+        name: roleBindingId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleBindingDetails'
+          description: successful operation
+      summary: Shows details regarding the specified role binding (either cluster
+        or namespaced).
+      tags:
+      - roleBinding
+  /roles:
+    get:
+      operationId: listRoles
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Role'
+                type: array
+          description: successful operation
+      summary: Lists all roles (both cluster and namespaced).
+      tags:
+      - role
+  /role/{roleId}:
+    delete:
+      operationId: deleteRole
+      parameters:
+      - explode: false
+        in: path
+        name: roleId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+          description: successful operation
+      summary: Deletes the specified role (either cluster or namespaced).
+      tags:
+      - role
+    get:
+      operationId: getRole
+      parameters:
+      - explode: false
+        in: path
+        name: roleId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDetails'
+          description: successful operation
+      summary: Shows details regarding the specified role (either cluster or namespaced).
+      tags:
+      - role
+components:
+  requestBodies:
+    CertificateUpload:
+      content:
+        application/json:
+          schema:
+            description: X.509 certificate data
+            type: string
+  schemas:
+    Certificate:
+      example:
+        subjectOrganization: subjectOrganization
+        subjectCommonName: subjectCommonName
+        isAuthorised: true
+        source: source
+        subjectAsText: subjectAsText
+        issuer: issuer
+      properties:
+        source:
+          description: X.509 certificate data
+          type: string
+        subjectAsText:
+          description: X.509 subject (in string format)
+          type: string
+        subjectCommonName:
+          type: string
+        subjectOrganization:
+          type: string
+        issuer:
+          description: X.509 issuer (in string format)
+          type: string
+        isAuthorised:
+          description: Whether certificate is signed by cluster CA (and so can be
+            used for K8S RBAC)
+          type: boolean
+      required:
+      - isAuthorised
+      - source
+      type: object
+    Role:
+      example:
+        roleId: roleId
+        kind: User
+        name: name
+        namespace: namespace
+      properties:
+        roleId:
+          type: string
+        kind:
+          enum:
+          - User
+          - Group
+          - ServiceAccount
+          type: string
+        name:
+          type: string
+        namespace:
+          description: "For a ServiceAccount, the account namespace. Null for Users\
+            \ and Groups"
+          type: string
+      required:
+      - kind
+      - name
+      - roleId
+      type: object
+    RoleDetails:
+      example:
+        roleId: roleId
+        kind: User
+        name: name
+        namespace: namespace
+      properties:
+        roleId:
+          type: string
+        kind:
+          enum:
+          - User
+          - Group
+          - ServiceAccount
+          type: string
+        name:
+          type: string
+        namespace:
+          description: "For a ServiceAccount, the account namespace. Null for Users\
+            \ and Groups"
+          type: string
+      required:
+      - kind
+      - name
+      - roleId
+      type: object
+    RoleBinding:
+      example:
+        kind: User
+        name: name
+        namespace: namespace
+        roleBindingId: roleBindingId
+      properties:
+        roleBindingId:
+          type: string
+        kind:
+          enum:
+          - User
+          - Group
+          - ServiceAccount
+          type: string
+        name:
+          type: string
+        namespace:
+          description: "For a ServiceAccount, the account namespace. Null for Users\
+            \ and Groups"
+          type: string
+      required:
+      - kind
+      - name
+      - roleBindingId
+      type: object
+    RoleBindingDetails:
+      example:
+        roleId: roleId
+        kind: User
+        name: name
+        namespace: namespace
+      properties:
+        roleId:
+          type: string
+        kind:
+          enum:
+          - User
+          - Group
+          - ServiceAccount
+          type: string
+        name:
+          type: string
+        namespace:
+          description: "For a ServiceAccount, the account namespace. Null for Users\
+            \ and Groups"
+          type: string
+      required:
+      - kind
+      - name
+      - roleId
+      type: object
+    Subject:
+      example:
+        kind: User
+        roles:
+        - roleId: roleId
+          roleName: roleName
+        - roleId: roleId
+          roleName: roleName
+        name: name
+        namespace: namespace
+        subjectId: subjectId
+      properties:
+        subjectId:
+          type: string
+        kind:
+          enum:
+          - User
+          - Group
+          - ServiceAccount
+          type: string
+        name:
+          type: string
+        namespace:
+          description: "For a ServiceAccount, the account namespace. Null for Users\
+            \ and Groups"
+          type: string
+        roles:
+          items:
+            $ref: '#/components/schemas/Subject_roles_inner'
+          type: array
+      required:
+      - kind
+      - name
+      - roles
+      - subjectId
+      type: object
+    SubjectDetails:
+      example:
+        kind: User
+        name: name
+        namespace: namespace
+        subjectId: subjectId
+      properties:
+        subjectId:
+          type: string
+        kind:
+          enum:
+          - User
+          - Group
+          - ServiceAccount
+          type: string
+        name:
+          type: string
+        namespace:
+          description: "For a ServiceAccount, the account namespace. Null for Users\
+            \ and Groups"
+          type: string
+      required:
+      - kind
+      - name
+      - subjectId
+      type: object
+    ApiResponse:
+      description: Describes the result of uploading an image resource
+      properties: {}
+      title: An uploaded response
+      type: object
+    Subject_roles_inner:
+      example:
+        roleId: roleId
+        roleName: roleName
+      properties:
+        roleId:
+          type: string
+        roleName:
+          type: string
+      required:
+      - roleId
+      - roleName
+      type: object

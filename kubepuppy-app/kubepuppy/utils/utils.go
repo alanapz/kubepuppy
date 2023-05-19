@@ -2,7 +2,9 @@ package utils
 
 import (
 	"github.com/google/uuid"
+	"reflect"
 	"strings"
+	"sync"
 )
 
 func Contains[T comparable](s []T, e T) bool {
@@ -60,6 +62,14 @@ func Max[T ~int](a, b T) T {
 	return b
 }
 
+func MapKeys[K comparable, V any](m map[K]V) []K {
+	r := make([]K, 0, len(m))
+	for k, _ := range m {
+		r = append(r, k)
+	}
+	return r
+}
+
 func MapValues[K comparable, V any](m map[K]V) []V {
 	r := make([]V, 0, len(m))
 	for _, v := range m {
@@ -85,4 +95,21 @@ func Any[T any](src []T, predicate func(T) bool) bool {
 		}
 	}
 	return false
+}
+
+const mutexLocked = 1
+
+func IsMutexLocked(m *sync.Mutex) bool {
+	state := reflect.ValueOf(m).Elem().FieldByName("state")
+	return state.Int()&mutexLocked == mutexLocked
+}
+
+func IsRWMutexWriteLocked(rw *sync.RWMutex) bool {
+	// RWMutex has a "w" sync.Mutex field for write lock
+	state := reflect.ValueOf(rw).Elem().FieldByName("w").FieldByName("state")
+	return state.Int()&mutexLocked == mutexLocked
+}
+
+func IsRWMutexReadLocked(rw *sync.RWMutex) bool {
+	return reflect.ValueOf(rw).Elem().FieldByName("readerCount").Int() > 0
 }

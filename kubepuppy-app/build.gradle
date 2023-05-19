@@ -1,0 +1,37 @@
+plugins {
+  id "org.openapi.generator" version "6.3.0"
+}
+
+final openApiBuildDir = file("${project.buildDir}/openapi")
+final openApiTargetDir = file("${project.projectDir}/kubepuppy/web")
+
+task _buildOpenApi(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask){
+  generatorName = "go-gin-server"
+  inputSpec = rootProject.file("openapi/kubepuppy.yaml").absolutePath
+  outputDir = openApiBuildDir.absolutePath
+  templateDir = file("${project.projectDir}/templates").absolutePath
+  configOptions = [
+      apiDocs: "false",
+      apis: "true",
+      apiTests: "false",
+      modelDocs: "false",
+      modelTests: "false",
+  ]
+}
+
+task _copyOpenApi(type: Copy) {
+  dependsOn _buildOpenApi
+  from "${openApiBuildDir}/go"
+  into file("${openApiTargetDir}").absolutePath
+  include "model_*.go"
+  include "routers.go"
+}
+
+task clean {
+    delete fileTree(dir: "${openApiTargetDir}", include: "model_*.go")
+    delete fileTree(dir: "${openApiTargetDir}", include: "routers.go")
+}
+
+task assemble {
+    dependsOn _buildOpenApi, _copyOpenApi
+}

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d4c916b0-9a53-4c47-a759-14eea4a9ee6f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/web/certificate.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/role.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/role_binding.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/cluster.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/cluster.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/cluster_refresh.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/cluster_refresh.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/role.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/role.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/role_binding.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/role_binding.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/subject.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/subject.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/.openapi-generator-ignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/api_certificate.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/api_role.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/api_role_binding.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/model_certificate.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/model_role.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/model_role_binding.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/model_role_binding_details.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/model_role_details.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/model_subject.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/model_subject_details.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/model_subject_roles_inner.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/routers.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/subject.go" beforeDir="false" afterPath="$PROJECT_DIR$/web/subject.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/utils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../openapi/kubepuppy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../../openapi/kubepuppy.yaml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../../Program Files/Go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2Q0CebvQJ5U4MWmPvF9DOnECvbK" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/alan/GolandProjects/kubepuppy/kubepuppy-app/kubepuppy/web&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\alan\GolandProjects\kubepuppy\kubepuppy-app\kubepuppy\web" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\alan\GolandProjects\kubepuppy\kubepuppy-app\kubepuppy\web" />
+      <recent name="C:\Users\alan\GolandProjects\kubepuppy\kubepuppy-app\kubepuppy\generated" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="go build kubepuppy" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="kubepuppy" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="kubepuppy" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build kubepuppy" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/web/utils.go</url>
+          <line>10</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/main.go</url>
+          <line>35</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/web/utils.go</url>
+          <line>20</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
